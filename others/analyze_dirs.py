@@ -16,6 +16,10 @@ def process_sub_dir(sub_dir):
     diff_variance = math.sqrt((first_row_timestamp_diff - middle_row_timestamp_diff) ** 2 + (last_row_timestamp_diff - middle_row_timestamp_diff) ** 2)
     print(f"Timestamp difference variance: {diff_variance}")
 
+    scale_factor = imu_df['timestamp'].iloc[-1] / heading_df['timestamp'].iloc[-1]
+    diff_scale_factor = (heading_df['timestamp'].iloc[-1] - heading_df['timestamp'].iloc[0]) / (imu_df['timestamp'].iloc[-1] - imu_df['timestamp'].iloc[0])
+    print(f"Scale factor: {scale_factor}, Difference scale factor: {diff_scale_factor}")
+
 def get_sub_dirs(main_dir):
     sub_dirs = []
     for item in os.listdir(main_dir):
