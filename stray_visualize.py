@@ -1,6 +1,8 @@
 import os
 import open3d as o3d
 import numpy as np
+np.float = np.float64
+np.int = np.int_
 from scipy.spatial.transform import Rotation
 from argparse import ArgumentParser
 from PIL import Image
