@@ -131,6 +131,7 @@ dmypy.json
 # Data
 data/
 archive/
+output/
 
 # Mac OS
 .DS_Store

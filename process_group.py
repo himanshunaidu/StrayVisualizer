@@ -185,9 +185,12 @@ DATASET_CSV_COLUMNS = [
 
 def create_dataset_csv(output_dir, flags):
     csv_path = os.path.join(output_dir, 'dataset.csv')
-    with open(csv_path, 'w') as f:
-        f.write(','.join(DATASET_CSV_COLUMNS) + '\n')
-    print(f"Created dataset CSV file at {csv_path}")
+    if os.path.exists(csv_path):
+        print(f"Dataset CSV file already exists at {csv_path}. Overwriting...")
+    else:
+        with open(csv_path, 'w') as f:
+            f.write(','.join(DATASET_CSV_COLUMNS) + '\n')
+        print(f"Created dataset CSV file at {csv_path}")
     return csv_path
 
 def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
@@ -215,6 +218,8 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
             continue
         
         rgb_frame_path = os.path.join(output_dir, 'rgb', f"{subdir}_frame_{i:06d}.jpg")
+        # Rotate frame clockwise by 90 degrees
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
         # Get the corresponding depth frame
         ## As mentioned, the depth frames are expected to be in the same order as the RGB frames.
@@ -229,7 +234,11 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
 
         ## Load the depth frame and confidence frame
         depth_image = load_depth_file(depth_path)
+        ## Rotate depth image to match RGB frame orientation
+        depth_image = cv2.rotate(depth_image, cv2.ROTATE_90_CLOCKWISE)
         confidence_image = load_confidence(depth_confidence_path)
+        ## Rotate confidence image to match RGB frame orientation
+        confidence_image = cv2.rotate(confidence_image, cv2.ROTATE_90_CLOCKWISE)
         if depth_image is None or confidence_image is None:
             print(f"Skipping frame {i} due to failed depth or confidence loading.")
             continue
