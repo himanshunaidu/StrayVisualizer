@@ -2,6 +2,7 @@
 data/
 archive/
 output/
+commands.txt
 !.gitkeep
 
 # Byte-compiled / optimized / DLL files

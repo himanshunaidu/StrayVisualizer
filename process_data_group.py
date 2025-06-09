@@ -11,7 +11,7 @@ import cv2
 import platform
 
 description = """
-This script visualizes a group of datasets collected using the Stray Scanner app.
+This script processes a group of datasets collected using the Stray Scanner app to create a dataset of 'test' images.
 """
 
 usage = """
@@ -217,7 +217,7 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
             print(f"Failed to read frame {i}")
             continue
         
-        rgb_frame_path = os.path.join(output_dir, 'rgb', f"{subdir}_frame_{i:06d}.jpg")
+        rgb_frame_path = os.path.join(output_dir, 'rgb', f"{subdir}_frame_{i:06d}.png")
         # Rotate frame clockwise by 90 degrees
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
@@ -330,3 +330,5 @@ if __name__ == '__main__':
 
         # Extract frames
         extract_frames(flags, rgb_data, csv_data, dataset_csv_path)
+
+# python 
