@@ -278,9 +278,9 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
         csv_data_row = [
             i,  # frame_index
             os.path.join(os.path.basename(os.path.dirname(flags.path)), subdir),  # original_path
-            rgb_frame_path,  # rgb_frame_path
-            depth_frame_path,  # depth_frame_path
-            confidence_frame_path,  # depth_confidence_frame_path
+            os.path.join('rgb', f"{subdir}_frame_{i:06d}.png"),  # rgb_frame_path
+            os.path.join('depth', f"{subdir}_depth_frame_{i:06d}.png"),  # depth_frame_path
+            os.path.join('confidence', f"{subdir}_confidence_frame_{i:06d}.png"),  # depth_confidence_frame_path
             intrinsics[0, 0], intrinsics[0, 1], intrinsics[0, 2],  # intrinsics_00, 01, 02
             intrinsics[1, 0], intrinsics[1, 1], intrinsics[1, 2],  # intrinsics_10, 11, 12
             intrinsics[2, 0], intrinsics[2, 1], intrinsics[2, 2],  # intrinsics_20, 21, 22
