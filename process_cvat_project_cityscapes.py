@@ -11,7 +11,7 @@ import shutil
 
 description = """
 This script processes annotations from a CVAT project (exported in Cityscapes format).
-It uses the file names to match original images (obtained from StrayScanner) with their corresponding annotations 
+It uses the file names to match original images (obtained from iOSPointMapperDataCollector) with their corresponding annotations 
 and saves the original images along with other data (Cityscapes format along with a dataset.csv file).
 """
 
@@ -50,7 +50,7 @@ ANNOTATION_FRAME_PATH_COLUMN = 'annotation_frame_path'
 
 def read_args():
     parser = ArgumentParser(description=description, usage=usage)
-    parser.add_argument('--cvat-path', type=str, help="Path to StrayScanner dataset to process.")
+    parser.add_argument('--cvat-path', type=str, help="Path to iOSPointMapperDataCollector dataset to process.")
     parser.add_argument('--data-paths', type=str, nargs='+',
                         help="Path to the dataset folder with images and other details.")
     # NOTE: For Cityscapes format, the output of the images would generally be leftImg8bit.

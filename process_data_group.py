@@ -20,7 +20,7 @@ Basic usage: python process_group.py <path-to-dataset-folder>
 
 def read_args():
     parser = ArgumentParser(description=description, usage=usage)
-    parser.add_argument('path', type=str, help="Path to StrayScanner dataset to process.")
+    parser.add_argument('path', type=str, help="Path to iOSPointMapperDataCollector dataset to process.")
     parser.add_argument("--every", type=int, default=6, help="Use every nth frame")
     parser.add_argument("--output", type=str, default="output", help="Output directory for processed frames")
     return parser.parse_args()
