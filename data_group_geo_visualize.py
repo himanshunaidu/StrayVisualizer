@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from PIL import Image
 
 description = """
-This script processes datasets collected using the iOSPointMapperDataCollector app.
+This script geographically visualizes datasets collected using the iOSPointMapperDataCollector app.
 """
 
 usage = """
@@ -56,7 +56,9 @@ def map_viz(data):
 
     fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
 
-    fig.show()
+    # fig.show()
+    fig.write_html(os.path.join(data_path, "map.html"))
+    # print(os.path.join(data_path, "map.html"))
 
 if __name__ == "__main__":
     flags = read_args()
