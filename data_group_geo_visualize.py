@@ -48,10 +48,11 @@ def map_viz(data):
             "floor_level": True,
             "location_timestamp": True,
         },
+        color_discrete_sequence=['red'],
         title="Mapped Trajectory with Heading",
         center={"lat": data["latitude"].mean(), "lon": data["longitude"].mean()},
         zoom=14,
-        mapbox_style="carto-positron",
+        mapbox_style="open-street-map",
     )
 
     fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
