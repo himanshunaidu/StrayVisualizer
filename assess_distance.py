@@ -2,17 +2,20 @@ import os
 import math
 import pandas as pd
 
-# DATA_PATH = 'output/2025_07_09_15_00_00/dataset.csv'
-# DATA_COLUMNS = ['frame_index', 'location_timestamp', 'latitude', 'longitude']
-DATA_PATH = 'archive/bellevue.csv'
-DATA_COLUMNS = ['sys_time', 'lat_deci', 'lon_deci']
-TIMESTAMP_COL = 'sys_time'
-LOCATION_COLS = ['lat_deci', 'lon_deci']
+DATA_PATH = 'output/2025_07_09_15_00_00/dataset.csv'
+DATA_COLUMNS = ['frame_index', 'location_timestamp', 'latitude', 'longitude']
+TIMESTAMP_COL = 'location_timestamp'
+LOCATION_COLS = ['latitude', 'longitude']
+# DATA_PATH = 'archive/bellevue.csv'
+# DATA_COLUMNS = ['sys_time', 'lat_deci', 'lon_deci']
+# TIMESTAMP_COL = 'sys_time'
+# LOCATION_COLS = ['lat_deci', 'lon_deci']
 
 dataset = pd.read_csv(DATA_PATH, usecols=DATA_COLUMNS)
 # location_timestamp as float then sort
 dataset[TIMESTAMP_COL] = dataset[TIMESTAMP_COL].astype(float)
 dataset = dataset.sort_values(by=TIMESTAMP_COL)
+dataset = dataset[1350:1650]  # Adjust the slice as needed
 print(dataset.head())
 
 def haversine(lon1, lat1, lon2, lat2):

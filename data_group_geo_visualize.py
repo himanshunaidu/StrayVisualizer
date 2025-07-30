@@ -29,6 +29,9 @@ def read_data(data_path):
         raise FileNotFoundError(f"Dataset CSV file not found at {csv_path}")
     
     data = pd.read_csv(csv_path)
+    
+    data = data.sort_values(by=["location_timestamp"])
+    data = data[1350:1650]
 
     return data
 
@@ -57,8 +60,8 @@ def map_viz(data):
 
     fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
 
-    # fig.show()
-    fig.write_html(os.path.join(data_path, "map.html"))
+    fig.show()
+    # fig.write_html(os.path.join(data_path, "map.html"))
     # print(os.path.join(data_path, "map.html"))
 
 if __name__ == "__main__":
