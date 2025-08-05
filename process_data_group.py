@@ -1,5 +1,5 @@
 import os
-import open3d as o3d
+# import open3d as o3d
 import numpy as np
 np.float = np.float64
 np.int = np.int_
@@ -73,7 +73,10 @@ def read_rgb(flags):
 
 def read_csv_data(flags):
     # Only 1 intrinsics matrix is expected per dataset.
-    intrinsics = np.loadtxt(os.path.join(flags.path, 'camera_matrix.csv'), delimiter=',')
+    if os.path.exists(os.path.join(flags.path, 'camera_matrix.csv')):
+        intrinsics = np.loadtxt(os.path.join(flags.path, 'camera_matrix.csv'), delimiter=',')
+    else:
+        return None # This is a good sign that the encoding has failed. 
     # The number of rows in the odometry file is expected to be equal to the number of frames in the RGB video.
     odometry = np.loadtxt(os.path.join(flags.path, 'odometry.csv'), delimiter=',', skiprows=1)
     # The number of rows in the imu and location files is expected to be different.
@@ -327,6 +330,9 @@ if __name__ == '__main__':
 
         # Read CSV data
         csv_data = read_csv_data(flags)
+        if csv_data is None:
+            print(f"Skipping dataset {subdir} due to missing camera matrix CSV file.")
+            continue
 
         # Extract frames
         extract_frames(flags, rgb_data, csv_data, dataset_csv_path)

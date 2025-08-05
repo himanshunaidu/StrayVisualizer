@@ -16,7 +16,7 @@ and saves the original images along with other data (Cityscapes format along wit
 """
 
 usage = """
-Basic usage: python process_group.py <path-to-dataset-folder>
+Basic usage: python process_cvat_project_cityscapes.py --cvat-path <path-to-dataset-folder> --data-paths <path-to-image-folder-1> <path-to-image-folder-2> ...
 """
 
 DATASET_CSV_COLUMNS = [
@@ -189,3 +189,16 @@ if __name__ == '__main__':
         print(f"Processing images in {data_path} with annotations from {flags.annotation_path}")
         save_data_for_annotation(data_path, flags.annotation_path, flags.cvat_path, flags.image_output_path,
                                  flags.depth_output_path, flags.depth_confidence_output_path)
+        
+    # Get the annotations that did not match any image
+    annotation_list = os.listdir(flags.annotation_path)
+    annotation_list = [img for img in annotation_list if img.endswith('_labelIds.png')]
+    image_list = os.listdir(flags.image_output_path)
+    image_list = [img for img in image_list if img.endswith('_leftImg8bit.png')]
+    image_list = [img.replace('_leftImg8bit.png', '.png') for img in image_list]
+    unmatched_annotations = [img for img in annotation_list if get_image_name_from_annotation(img) not in image_list]
+    print(f"Unmatched annotations: {len(unmatched_annotations)}")
+    if unmatched_annotations:
+        print("Unmatched annotations:")
+        for annotation in unmatched_annotations:
+            print(annotation)

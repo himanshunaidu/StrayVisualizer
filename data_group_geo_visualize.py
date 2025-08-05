@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from PIL import Image
 
 description = """
-This script processes datasets collected using the iOSPointMapperDataCollector app.
+This script geographically visualizes datasets collected using the iOSPointMapperDataCollector app.
 """
 
 usage = """
@@ -29,6 +29,9 @@ def read_data(data_path):
         raise FileNotFoundError(f"Dataset CSV file not found at {csv_path}")
     
     data = pd.read_csv(csv_path)
+    
+    data = data.sort_values(by=["location_timestamp"])
+    data = data[1350:1650]
 
     return data
 
@@ -48,15 +51,18 @@ def map_viz(data):
             "floor_level": True,
             "location_timestamp": True,
         },
+        color_discrete_sequence=['red'],
         title="Mapped Trajectory with Heading",
         center={"lat": data["latitude"].mean(), "lon": data["longitude"].mean()},
         zoom=14,
-        mapbox_style="carto-positron",
+        mapbox_style="open-street-map",
     )
 
     fig.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
 
     fig.show()
+    # fig.write_html(os.path.join(data_path, "map.html"))
+    # print(os.path.join(data_path, "map.html"))
 
 if __name__ == "__main__":
     flags = read_args()
