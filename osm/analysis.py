@@ -96,8 +96,7 @@ def get_location_errors(nodes, target_classes):
             corrected_lon = node_orig_pos[1] + delta_lon
             corrected_pos = (corrected_lat, corrected_lon)
             true_pos = (node['lat'], node['lon'])
-            # Calculate, along with random noise
-            pos_error = geodesic(corrected_pos, true_pos).meters + random.uniform(-0.15, 0.25)
+            pos_error = geodesic(corrected_pos, true_pos).meters
             location_errors.append({
                 'node_id': node_id,
                 'demo:class': node_class,
@@ -128,7 +127,7 @@ def get_width_errors(nodes, target_classes):
         try:
             width_true = float(tags.get('demo:finalWidth', 0))
             width_calc = float(tags.get('demo:width', width_true))  # if missing, assume no error
-            width_diff = abs(width_true - width_calc) + random.uniform(-0.1, 0.2)
+            width_diff = abs(width_true - width_calc)
         except ValueError:
             width_diff = 0
         width_errors.append({
