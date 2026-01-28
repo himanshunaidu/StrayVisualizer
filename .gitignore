@@ -2,6 +2,7 @@
 data/
 archive/
 output/
+output_mesh/
 commands.txt
 !.gitkeep
 

@@ -31,7 +31,7 @@ def read_data(data_path):
     data = pd.read_csv(csv_path)
     
     data = data.sort_values(by=["location_timestamp"])
-    data = data[1350:1650]
+    # data = data[1350:1650]
 
     return data
 
