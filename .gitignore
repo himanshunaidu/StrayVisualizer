@@ -3,8 +3,10 @@ data/
 archive/
 cvat_exports/
 output/
+output_mesh/
 commands.txt
 !.gitkeep
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
