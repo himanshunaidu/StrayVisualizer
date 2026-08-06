@@ -1,6 +1,7 @@
 # Project-specific
 data/
 archive/
+cvat_exports/
 output/
 commands.txt
 !.gitkeep

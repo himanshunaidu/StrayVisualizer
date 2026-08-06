@@ -71,6 +71,9 @@ def process_dataset_csv(cvat_path):
 
     # Create a new DataFrame with only the required columns
     processed_df = df[['rgb_frame_path', 'annotation_frame_path']]
+    # For both paths, remove the leading '/' if present
+    processed_df['rgb_frame_path'] = processed_df['rgb_frame_path'].apply(lambda x: x.lstrip('/'))
+    processed_df['annotation_frame_path'] = processed_df['annotation_frame_path'].apply(lambda x: x.lstrip('/'))
     
     output_txt_path = os.path.join(cvat_path, 'dataset.txt')
     with open(output_txt_path, 'w') as f:

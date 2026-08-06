@@ -131,6 +131,13 @@ def save_data_for_annotation(data_path, annotation_path, output_path, image_outp
         image_output_file_path = os.path.join(image_output_path, annotation_image_file)
         image_output_file_path = image_output_file_path.replace('.png', '_leftImg8bit.png')
         shutil.copy(image_data_file_path, image_output_file_path)
+        # Check if the extension of the output file is .jpg, if so, convert it to .png
+        if image_output_file_path.endswith('.jpg'):
+            new_image_output_file_path = image_output_file_path.replace('.jpg', '.png')
+            convert_jpg_to_png(image_output_file_path, new_image_output_file_path)
+            os.remove(image_output_file_path)  # Remove the original .jpg file
+            image_output_file_path = new_image_output_file_path  # Update the path to the new .png file
+            
         print("Copied RGB image to", image_output_file_path)
 
         # Move the depth image file to the output path
@@ -202,3 +209,9 @@ if __name__ == '__main__':
         print("Unmatched annotations:")
         for annotation in unmatched_annotations:
             print(annotation)
+            
+# python process_cvat_project_cityscapes.py --cvat-path ./cvat_exports/ios_point_mapper --data-paths ./output/2025_05_28_18_00_00 ./output/2025_05_29_17_30_00 ./output/2025_06_09_11_30_00 ./output/2025_06_11_11_30_00 ./output/2025_06_15_13_30_00 ./output/2025_06_15_16_00_00 ./output/2025_06_21_11_30_00 ./output/2025_06_27_7_45_00 ./output/2025_07_06_16_00_00 ./output/2025_07_09_15_00_00 
+
+# Data paths: ./output/2025_07_09_15_00_00 ./output/2026_01_30_16_00_00 ./output/2025_07_31_16_00_00 ./output/2025_09_16_16_45_00 ./output/2025_08_18_13_00_00 ./output/2025_09_23_14_30_00 ./output/2025_05_29_17_30_00 ./output/2026_01_30_13_00_00 ./output/2026_01_13_11_00_00 ./output/2025_08_17_18_00_00 ./output/2025_06_11_11_30_00 ./output/2025_07_06_16_00_00 ./output/2025_06_09_11_30_00 ./output/2025_06_15_13_30_00 ./output/2025_06_21_11_30_00 ./output/2025_07_24_11_00_00 ./output/2025_06_15_16_00_00 ./output/2026_03_20_11_00_00 ./output/2025_05_28_18_00_00 ./output/2025_06_27_7_45_00
+
+# python process_cvat_project_cityscapes.py --cvat-path ./cvat_exports/ios_point_mapper --data-paths ./output/2025_07_09_15_00_00 ./output/2026_01_30_16_00_00 ./output/2025_07_31_16_00_00 ./output/2025_09_16_16_45_00 ./output/2025_08_18_13_00_00 ./output/2025_09_23_14_30_00 ./output/2025_05_29_17_30_00 ./output/2026_01_30_13_00_00 ./output/2026_01_13_11_00_00 ./output/2025_08_17_18_00_00 ./output/2025_06_11_11_30_00 ./output/2025_07_06_16_00_00 ./output/2025_06_09_11_30_00 ./output/2025_06_15_13_30_00 ./output/2025_06_21_11_30_00 ./output/2025_07_24_11_00_00 ./output/2025_06_15_16_00_00 ./output/2026_03_20_11_00_00 ./output/2025_05_28_18_00_00 ./output/2025_06_27_7_45_00
