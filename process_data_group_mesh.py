@@ -9,6 +9,7 @@ from PIL import Image
 # import skvideo.io
 import cv2
 import platform
+import shutil
 
 description = """
 This script processes a group of datasets collected using the Stray Scanner app to create a dataset of 'test' images.
@@ -96,14 +97,16 @@ def read_csv_data(flags):
     depth_confidence_frames = [os.path.join(depth_confidence_dir, p) for p in sorted(os.listdir(depth_confidence_dir))]
     depth_confidence_frames = [f for f in depth_confidence_frames if '.png' in f]
     
-    # Check the mesh folder for the presence of mesh files
+    # Check the mesh folder for the presence of mesh files.
+    # If the mesh folder is not present, return
     mesh_dir = os.path.join(flags.path, 'mesh')
     if not os.path.exists(mesh_dir):
-        print(f"Warning: Mesh directory not found at {mesh_dir}. Continuing without mesh files.")
+        return None
     mesh_files = os.listdir(mesh_dir) if os.path.exists(mesh_dir) else []
     mesh_files = [f for f in mesh_files if f.endswith('.ply') or f.endswith('.obj')]
     if len(mesh_files) == 0:
-        print(f"Warning: No mesh files found in {mesh_dir}. Continuing without mesh files.")
+        return None
+    mesh_file_path = os.path.join(mesh_dir, mesh_files[0])
 
     return {
         'intrinsics': intrinsics, 
@@ -112,7 +115,8 @@ def read_csv_data(flags):
         'location': location,
         'heading': heading,
         'depth_frames': depth_frames,
-        'depth_confidence_frames': depth_confidence_frames
+        'depth_confidence_frames': depth_confidence_frames,
+        'mesh_file_path': mesh_file_path
     }
 
 def get_data_sync_params(flags, csv_data):
@@ -219,13 +223,25 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
     imu = csv_data['imu']
     location = csv_data['location']
     heading = csv_data['heading']
+    
+    mesh_file_path = csv_data.get('mesh_file_path', None)
+    if mesh_file_path is not None:
+        mesh_presence = 1
+    else:
+        mesh_presence = 0
 
     time_diff = get_data_sync_params(flags, csv_data)
     print(f"Time difference for synchronization: {time_diff:.6f} seconds")
 
     subdir = os.path.basename(flags.path)
+    
+    loop_array = range(0, frame_count, every_nth_frame)
+    # Include the last frame if not already included
+    if (frame_count - 2) not in loop_array:
+        loop_array = list(loop_array) + [frame_count - 2]
+    print(f"{subdir}: Extracting frames from {loop_array[0]} to {loop_array[-1]} every {every_nth_frame} frames.")
 
-    for i in range(0, frame_count, every_nth_frame):
+    for i in loop_array:
         cap.set(cv2.CAP_PROP_POS_FRAMES, i)
         ret, frame = cap.read()
         if not ret:
@@ -288,6 +304,16 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
         confidence_frame_path = os.path.join(output_dir, 'confidence', f"{subdir}_confidence_frame_{i:06d}.png")
         cv2.imwrite(confidence_frame_path, confidence_image)
         print(f"Saved {confidence_frame_path}")
+        
+        # Copy mesh file to output directory
+        if mesh_file_path is None:
+            continue
+        mesh_file_name = os.path.basename(mesh_file_path)
+        mesh_output_file_name = f"{subdir}_" + mesh_file_name
+        mesh_output_path = os.path.join(output_dir, 'mesh', mesh_output_file_name)
+        if not os.path.exists(mesh_output_path):
+            shutil.copy(mesh_file_path, mesh_output_path)
+            print(f"Copied mesh file to {mesh_output_path}")
 
         # Prepare the data for the CSV file
         csv_data_row = [
@@ -310,7 +336,8 @@ def extract_frames(flags, rgb_data, csv_data, dataset_csv_path):
             location_data[4], location_data[5],  # horizontal_accuracy, vertical_accuracy
             location_data[6], location_data[7], location_data[8],  # speed, course, floor_level
             heading_data[0],  # heading_timestamp
-            heading_data[1], heading_data[2], heading_data[3]  # magnetic_heading, true_heading, heading_accuracy
+            heading_data[1], heading_data[2], heading_data[3],  # magnetic_heading, true_heading, heading_accuracy
+            mesh_presence, os.path.join('mesh', mesh_output_file_name) # mesh_file_path
         ]
         # Write the data to the CSV file
         with open(dataset_csv_path, 'a') as f:
